@@ -4,11 +4,11 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name="products")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "products")
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,10 +19,17 @@ public class Product {
     private double price;
     @Setter
     private String description;
+    
     @Setter
-    private Long categoryId;
+    @ManyToOne
+    @JoinColumn(name="category")
+    private Category category;
+    
     @Setter
     private int stock;
+
+    @Setter
+    private String imageUrl;
 
     @Override
     public String toString() {
@@ -31,7 +38,7 @@ public class Product {
                 ", name='" + name + '\'' +
                 ", price=" + price +
                 ", description='" + description + '\'' +
-                ", category='" + categoryId + '\'' +
+                ", category ='" + category.getName() + '\'' +
                 ", stock=" + stock +
                 '}';
     }

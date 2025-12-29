@@ -6,25 +6,20 @@ import lombok.*;
 import java.util.List;
 
 @Entity
-@Table(name="categories")
+@Table(name="carritos")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Category {
+public class Carrito {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Setter
-    private String name;
-    @Setter
-    private String imageUrl;
 
-    @Override
-    public String toString() {
-        return "Category{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                '}';
-    }
+    @ManyToMany
+    @Setter
+    private List<Product> products;
+    @Setter
+    @OneToOne
+    private User user;
 }

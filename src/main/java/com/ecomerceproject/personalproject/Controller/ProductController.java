@@ -1,7 +1,6 @@
 package com.ecomerceproject.personalproject.Controller;
 
 import com.ecomerceproject.personalproject.DTOs.ProductDTO;
-import com.ecomerceproject.personalproject.Model.Product;
 import com.ecomerceproject.personalproject.Service.ProductService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,12 +22,12 @@ public class ProductController {
     }
 
     @GetMapping()
-    public ResponseEntity<List<ProductDTO>> getProducts() {
-        return ResponseEntity.ok(productService.getAllProducts());
+    public ResponseEntity<List<ProductDTO>> getProducts(@RequestParam(required = false) String category) {
+        return ResponseEntity.ok(productService.getAllProducts(category));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Product> getProductById(@PathVariable Long id) {
+    public ResponseEntity<ProductDTO> getProductById(@PathVariable Long id) {
         return ResponseEntity.ok(productService.getProductById(id));
     }
 

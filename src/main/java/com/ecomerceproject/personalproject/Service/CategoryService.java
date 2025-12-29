@@ -3,6 +3,7 @@ package com.ecomerceproject.personalproject.Service;
 import Mappers.CategoryMapper;
 import com.ecomerceproject.personalproject.DTOs.CategoryDTO;
 import com.ecomerceproject.personalproject.Model.Category;
+import com.ecomerceproject.personalproject.Model.Product;
 import com.ecomerceproject.personalproject.Repository.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -43,8 +44,7 @@ public class CategoryService {
         if(optional.isPresent()) {
             Category category = optional.get();
             category.setName(updatedDto.name());
-            category.setDescription(updatedDto.description());
-            category.setProducts(updatedDto.products());
+            category.setImageUrl(updatedDto.imageUrl());
 
             return CategoryMapper.toDTO(categoryRepository.save(category));
         }

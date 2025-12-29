@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head th:replace="~{fragments/base :: head-content}">
+  <title th:text="${category.name}"></title>
+</head>
+<body>
+
+<div th:replace="~{fragments/base :: navigation}"></div>
+
+<div class="main-container">
+  <h1 th:text="${category.name}">Categoría</h1>
+
+  <!-- Contenedor Grid para los productos -->
+  <div class="products-grid">
+    <div class="product-card" th:each="product :${products}">
+      <a th:href="@{/view/products/{id}(id=${product.id})}">
+        <div class="product-image-section">
+          <!-- Si hay URL de imagen, mostramos la imagen -->
+          <img th:if="${product.imageUrl != null and !product.imageUrl.isEmpty()}"
+               th:src="${product.imageUrl}"
+               alt="Imagen del producto"
+               class="product-img">
+
+          <!-- Si NO hay URL, mostramos el placeholder -->
+          <!-- Corregido: extensión jpg y ruta absoluta -->
+          <img th:unless="${product.imageUrl != null and !product.imageUrl.isEmpty()}"
+               th:src="@{/img/product-placeholder.jpg}"
+               alt="Imagen placeholder"
+               class="product-img">
+        </div>
+        <div class="product-info">
+          <h2 th:text="${product.name}"> </h2>
+          <p class="description-preview" th:text="${product.description}"> </p>
+          <p class="price" th:text="'$' + ${product.price}"> </p>
+          <div class="stock-status">
+                            <span th:if="${product.stock > 0}" class="in-stock">
+                                <i class="fas fa-check-circle"></i> Disponible
+                            </span>
+            <span th:unless="${product.stock > 0}" class="out-of-stock">
+                                <i class="fas fa-times-circle"></i> Agotado
+                            </span>
+          </div>
+        </div>
+      </a>
+    </div>
+  </div>
+</div>
+
+<div th:replace="~{fragments/base :: footer}"></div>
+
+</body>
+</html>

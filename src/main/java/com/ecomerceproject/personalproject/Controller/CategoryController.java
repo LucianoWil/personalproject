@@ -1,6 +1,7 @@
 package com.ecomerceproject.personalproject.Controller;
 
 import com.ecomerceproject.personalproject.DTOs.CategoryDTO;
+import com.ecomerceproject.personalproject.DTOs.ProductDTO;
 import com.ecomerceproject.personalproject.Model.Category;
 import com.ecomerceproject.personalproject.Service.CategoryService;
 import org.springframework.http.ResponseEntity;

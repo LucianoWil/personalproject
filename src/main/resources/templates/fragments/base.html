@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:fragment="head-content">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi E-Shop</title>
+    <link rel="stylesheet" th:href="@{/css/product-card.css}">
+    <link rel="stylesheet" th:href="@{/css/cart.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar" th:fragment= "navigation">
+        <div class="nav-container">
+            <a href="#" class="nav-logo">Mi E-Shop</a>
+            <form class="search-form" th:action="@{/view/products/list}" method="get">
+                <input type="text"
+                       name="name"
+                       th:value="${name}"
+                       placeholder="Buscar productos..."
+                       aria-label="Buscar">
+                <button type="submit"><i class="fas fa-search"></i></button>
+            </form>
+            <div class="nav-links">
+                <a href="#">Inicio</a>
+                <a th:href="@{/view/products/list}">Catálogo</a>
+                <a th:href="@{/view/categories/list}">Categorías</a>
+                <a th:href="@{/view/cart}">Carrito <i class="fas fa-shopping-cart"></i></a>
+            </div>
+        </div>
+    </nav>
+
+    <footer th:fragment="footer" style="text-align: center; padding: 20px; color: #777;">
+        <p>&copy; 2025 Mi E-commerce en Spring Boot</p>
+    </footer>
+</body>
+</html>

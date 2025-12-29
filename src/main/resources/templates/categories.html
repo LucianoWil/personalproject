@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+<head th:replace="~{fragments/base :: head-content}">
+    <title>Categorías</title>
+</head>
+<body>
+
+<div th:replace="~{fragments/base :: navigation}"></div>
+
+<div class="main-container">
+    <h1>Categorías</h1>
+
+    <!-- Contenedor Grid para las categorías -->
+    <div class="products-grid">
+        <div class="product-card" th:each="category :${categories}">
+            <a th:href="@{/view/categories/{id}(id=${category.id})}">
+                <div class="product-image-section">
+                    <!-- Si hay URL de imagen, mostramos la imagen -->
+                    <img th:if="${category.imageUrl != null and !category.imageUrl.isEmpty()}"
+                         th:src="${category.imageUrl}"
+                         alt="Imagen de categoria"
+                         class="product-img">
+
+                    <!-- Si NO hay URL, mostramos el placeholder -->
+                    <!-- Corregido: extensión jpg y ruta absoluta -->
+                    <img th:unless="${category.imageUrl != null and !category.imageUrl.isEmpty()}"
+                         th:src="@{/img/category-placeholder.jpg}"
+                         alt="Imagen placeholder"
+                         class="product-img">
+                </div>
+                <div class="product-info">
+                    <h2 th:text="${category.name}"> </h2>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments/base :: footer}"></div>
+
+</body>
+</html>

@@ -1,6 +1,7 @@
 package com.ecomerceproject.personalproject.Service;
 import Mappers.ProductMapper;
 import com.ecomerceproject.personalproject.DTOs.ProductDTO;
+import com.ecomerceproject.personalproject.Model.Category;
 import com.ecomerceproject.personalproject.Repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,23 +17,43 @@ public class ProductService {
     @Autowired
     private final ProductRepository productRepository;
 
-    public ProductService(ProductRepository productRepository) {
+    @Autowired
+    private final CategoryService categoryService;
+
+    public ProductService(ProductRepository productRepository, CategoryService categoryService) {
         this.productRepository = productRepository;
+        this.categoryService = categoryService;
     }
 
+    // Método sobrecargado para cuando no se pasa categoría (devuelve todos)
     public List<ProductDTO> getAllProducts() {
+        return getAllProducts(null);
+    }
+
+    // Método principal con la lógica
+    public List<ProductDTO> getAllProducts(String category) {
+        if (category != null && !category.isEmpty()){
+            return productRepository.findByCategoryName(category).stream().map(ProductMapper::toDTO).collect(Collectors.toList());
+        }
         return productRepository.findAll().stream().map(ProductMapper::toDTO).collect(Collectors.toList());
     }
 
-    public Product getProductById(Long id) {
-        if (productRepository.findById(id).isPresent()) {
-            return productRepository.findById(id).get();
+    public List<ProductDTO> getByName(String name) {
+        return productRepository.findByNameContainingIgnoreCase(name).stream().map(ProductMapper::toDTO).collect(Collectors.toList());
+    }
+
+    public ProductDTO getProductById(Long id) {
+        Optional<Product> product = productRepository.findById(id);
+        if (product.isPresent()) {
+            return ProductMapper.toDTO(product.get());
         }
-        return null;
+        return null; // O podrías lanzar una excepción si prefieres
     }
 
     public ProductDTO createProduct(ProductDTO dto) {
         Product product = ProductMapper.toEntity(dto);
+        Category category = categoryService.getCategoryById(dto.categoryId());
+        product.setCategory(category);
         return ProductMapper.toDTO(productRepository.save(product));
     }
 
@@ -44,8 +65,12 @@ public class ProductService {
             product.setName(updatedDto.name());
             product.setPrice(updatedDto.price());
             product.setDescription(updatedDto.description());
-            product.setCategoryId(updatedDto.categoryId());
+
+            Category category = categoryService.getCategoryById(updatedDto.categoryId());
+
+            product.setCategory(category);
             product.setStock(updatedDto.stock());
+            product.setImageUrl(updatedDto.imageUrl());
 
             return ProductMapper.toDTO(productRepository.save(product));
         }

@@ -5,6 +5,10 @@ import com.ecomerceproject.personalproject.DTOs.UserDTO;
 import com.ecomerceproject.personalproject.Model.User;
 import com.ecomerceproject.personalproject.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,9 +16,11 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
     @Autowired
     private final UserRepository userRepository;
+
+
 
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -41,10 +47,10 @@ public class UserService {
 
         if(optional.isPresent()) {
             User user = optional.get();
-            user.setName(updatedDto.name());
+            user.setUsername(updatedDto.username());
             user.setEmail(updatedDto.email());
             user.setPassword(updatedDto.password());
-            user.setAdmin(updatedDto.admin());
+            user.setRole(updatedDto.role());
 
             return UserMapper.toDTO(userRepository.save(user));
         }
@@ -60,5 +66,12 @@ public class UserService {
         else{
             throw new RuntimeException("User with id" + id + " not found");
         }
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        var user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found" + username));
+        return (UserDetails) User.builder().id(user.getId()).username(user.getUsername()).email(user.getEmail()).password(user.getPassword()).role(user.getRole()).build();
+
     }
 }

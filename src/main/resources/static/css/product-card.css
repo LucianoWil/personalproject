@@ -1,0 +1,278 @@
+:root {
+    --primary-color: #3498db;
+    --dark-text: #2c3e50;
+    --light-text: #7f8c8d;
+    --bg-color: #f8f9fa;
+    --white: #ffffff;
+    --success: #27ae60;
+    --danger: #c0392b;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: var(--bg-color);
+    color: var(--dark-text);
+}
+
+/* Navbar */
+.navbar {
+    background-color: var(--white);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    padding: 1rem 0;
+    margin-bottom: 2rem;
+}
+
+.nav-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+}
+
+.nav-logo {
+    font-weight: bold;
+    font-size: 1.5rem;
+    text-decoration: none;
+    color: var(--dark-text);
+}
+
+.nav-links a {
+    margin-left: 20px;
+    text-decoration: none;
+    color: var(--dark-text);
+    font-weight: 500;
+}
+
+.search-form {
+    display: flex;
+    align-items: center;
+    background: #f1f3f5;
+    padding: 5px 10px;
+    border-radius: 20px;
+    margin-right: 20px; /* Separarlo de los links */
+}
+
+.search-form input {
+    border: none;
+    background: transparent;
+    outline: none;
+    padding: 5px;
+    font-size: 0.9rem;
+}
+
+.search-form button {
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    color: #555;
+    transition: color 0.3s;
+}
+
+.search-form button:hover {
+    color: #000;
+}
+
+
+/* Contenedor Principal */
+.main-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* --- ESTILOS PARA LA LISTA DE PRODUCTOS (GRID) --- */
+
+.products-grid {
+    display: grid;
+    /* Columnas de ancho fijo/flexible */
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 25px; /* Un poco más de espacio entre tarjetas */
+    margin-top: 20px;
+}
+
+.product-card {
+    background: var(--white);
+    border: 1px solid #e1e1e1;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    flex-direction: column;
+    height: 400px; /* ALTURA FIJA PARA TODAS LAS TARJETAS */
+}
+
+.product-card a{
+    text-decoration: none;
+    height: 100%;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+/* Sección de Imagen en la Tarjeta */
+.product-card .product-image-section {
+    width: 100%;
+    height: 220px; /* ALTURA FIJA PARA LA SECCIÓN DE IMAGEN */
+    background-color: #f8f9fa;
+    position: relative;
+    flex-shrink: 0; /* Evita que la imagen se encoja si falta espacio */
+}
+
+.product-card .product-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* CLAVE: Recorta la imagen para llenar el espacio */
+    object-position: center;
+}
+
+/* Información de la Tarjeta */
+.product-card .product-info {
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1; /* Ocupa el resto del espacio disponible */
+    justify-content: space-between; /* Distribuye el contenido verticalmente */
+}
+
+.product-card h2 {
+    font-size: 1.1rem;
+    margin: 0 0 8px 0;
+    color: var(--dark-text);
+    /* Limitar título a 1 línea con puntos suspensivos */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.product-card .description-preview {
+    font-size: 0.9rem;
+    color: var(--light-text);
+    margin-bottom: 10px;
+    /* Limitar descripción a 3 líneas */
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    line-height: 1.4;
+}
+
+.product-card .price {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: var(--primary-color);
+    margin: 0;
+}
+
+.product-card .stock-status {
+    font-size: 0.85rem;
+    margin: 5px 0;
+}
+
+.in-stock { color: var(--success); }
+.out-of-stock { color: var(--danger); }
+
+.btn-view-details:hover {
+    background-color: #000;
+}
+
+
+/* --- ESTILOS PARA EL DETALLE DE PRODUCTO (product.html) --- */
+/* Estos estilos aplican solo a la vista de detalle individual */
+
+.product-detail-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    background: var(--white);
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+
+.product-detail-container .product-image-section {
+    height: 400px; /* Altura específica para la vista de detalle */
+    background-color: #e9ecef;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.product-detail-container .product-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* En detalle queremos ver la imagen completa */
+}
+
+.product-detail-container .image-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: #adb5bd;
+}
+
+.purchase-actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.quantity-input {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    width: 60px;
+    text-align: center;
+    font-size: 1rem;
+}
+
+.btn-add-cart {
+    flex: 1; /* Ocupa el resto del espacio */
+    background-color: var(--dark-text);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 6px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.3s;
+    text-transform: uppercase;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+}
+
+.btn-add-cart:hover {
+    background-color: #000;
+}
+
+/* Not Found Estilos */
+.not-found-container {
+    text-align: center;
+    padding: 50px;
+}
+
+.btn-back {
+    display: inline-block;
+    margin-top: 20px;
+    text-decoration: none;
+    color: var(--primary-color);
+    font-weight: bold;
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+    .product-detail-container {
+        grid-template-columns: 1fr;
+    }
+
+    .product-detail-container .product-image-section {
+        height: 300px;
+    }
+}
