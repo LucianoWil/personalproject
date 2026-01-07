@@ -11,30 +11,30 @@
     <h1>Tu Carrito de Compras</h1>
 
     <div class="cart-container">
-        <!-- Lista de productos en el carrito -->
+        <!-- Lista de productos en el cart -->
         <div class="cart-items">
-            <div th:if="${carrito == null or carrito.products == null or carrito.products.isEmpty()}" class="empty-cart">
-                <p>Tu carrito está vacío.</p>
+            <div th:if="${cart == null or cart.isEmpty()}" class="empty-cart">
+                <p>Tu cart está vacío.</p>
                 <a th:href="@{/view/products/list}" class="btn-continue-shopping">Continuar comprando</a>
             </div>
 
-            <div th:if="${carrito != null and carrito.products != null and !carrito.products.isEmpty()}">
-                <div th:each="product : ${carrito.products}" class="cart-item">
+            <div th:if="${cart != null and !cart.isEmpty()}">
+                <div th:each="productItem : ${cart}" class="cart-item">
                     <div class="cart-item-image">
-                        <img th:if="${product.imageUrl != null and !product.imageUrl.isEmpty()}"
-                             th:src="${product.imageUrl}"
+                        <img th:if="${productItem.getProduct().imageUrl != null and !productItem.getProduct().imageUrl.isEmpty()}"
+                             th:src="${productItem.getProduct().imageUrl}"
                              alt="Imagen del producto">
-                        <img th:unless="${product.imageUrl != null and !product.imageUrl.isEmpty()}"
-                             th:src="@{/img/product-placeholder.jpg}"
+                        <img th:unless="${productItem.getProduct().imageUrl != null and !productItem.getProduct().imageUrl.isEmpty()}"
+                             th:src="@{/img/productItem.getProduct()-placeholder.jpg}"
                              alt="Imagen placeholder">
                     </div>
                     <div class="cart-item-details">
-                        <h3 th:text="${product.name}">Nombre del Producto</h3>
-                        <p class="item-price" th:text="'$' + ${product.price}">$0.00</p>
+                        <h3 th:text="${productItem.getProduct().name} + ' x ' + ${productItem.getQuantity()}">Nombre del Producto</h3>
+                        <p class="item-price" th:text="'$' + ${productItem.getProduct().price}">$0.00</p>
                     </div>
                     <div class="cart-item-actions">
-                        <!-- Aquí podrías agregar lógica para eliminar del carrito -->
-                        <form th:action="@{/cart/remove/{productId}(productId=${product.id})}" method="post">
+                        <!-- Aquí podrías agregar lógica para eliminar del cart -->
+                        <form th:action="@{/cart/remove/{productId}(productId=${productItem.getProduct().id})}" method="post">
                             <button type="submit" class="btn-remove"><i class="fas fa-trash"></i> Eliminar</button>
                         </form>
                     </div>
@@ -43,16 +43,20 @@
         </div>
 
         <!-- Resumen del pedido -->
-        <div class="cart-summary" th:if="${carrito != null and carrito.products != null and !carrito.products.isEmpty()}">
+        <div class="cart-summary" th:if="${cart != null and !cart.isEmpty()}">
             <h2>Resumen del Pedido</h2>
+            <div class="summary-row" th:each="productItem : ${cart}">
+                <span th:text="${productItem.getProduct().name}"></span>
+                <span th:text="${productItem.getQuantity()}"></span>
+            </div>
             <div class="summary-row">
-                <span>Total Productos:</span>
-                <span th:text="${carrito.products.size()}">0</span>
+                <span>Total Productos</span>
+                <span th:text="${cart.size()}">0</span>
             </div>
             <div class="summary-row total">
                 <span>Total:</span>
                 <!-- Calculamos el total sumando los precios de los productos -->
-                <span th:text="'$' + ${#aggregates.sum(carrito.products[price])}">$0.00</span>
+               <!-- <span th:text="'$' + ${#aggregates.sum(cart.![price])}">$0.00</span> -->
             </div>
             <button class="btn-checkout">Proceder al Pago</button>
         </div>

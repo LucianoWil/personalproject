@@ -1,8 +1,9 @@
 package com.ecomerceproject.personalproject.Controller;
 
-import com.ecomerceproject.personalproject.Model.Carrito;
+import com.ecomerceproject.personalproject.Model.CartItem;
 import com.ecomerceproject.personalproject.Model.User;
 import com.ecomerceproject.personalproject.Repository.UserRepository;
+import com.ecomerceproject.personalproject.Security.JwtUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -11,6 +12,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -23,7 +26,16 @@ public class CartViewController {
     @GetMapping
     public String viewCart(Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
+        Object principal = authentication.getPrincipal();
+        String username;
+
+        if (principal instanceof JwtUserDetails) {
+            username = ((JwtUserDetails) principal).username();
+        } else {
+            username = authentication.getName();
+        }
+
+        System.out.println(username);
         
         // Intentamos buscar por email primero, ya que es lo que usamos en el login
         Optional<User> userOptional = userRepository.findByEmail(username);
@@ -34,12 +46,16 @@ public class CartViewController {
         }
         
         if (userOptional.isPresent()) {
+            System.out.println("Hay usuario");
             User user = userOptional.get();
-            Carrito carrito = user.getCarrito();
-            model.addAttribute("carrito", carrito);
+            List<CartItem> cart = user.getCart();
+            System.out.println("Carrito: " + cart);
+            model.addAttribute("cart", cart);
         } else {
+            System.out.println("NO hay usuario");
             // Manejar caso de usuario no encontrado o no logueado adecuadamente
-            model.addAttribute("carrito", new Carrito());
+            List<CartItem> cart = new ArrayList<>();
+            model.addAttribute("cart", cart);
         }
         
         return "cart";

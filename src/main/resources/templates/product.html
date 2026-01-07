@@ -2,12 +2,26 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments/base :: head-content}">
     <title th:text="${product != null} ? ${product.name} : 'Producto no encontrado'">Detalle de Producto</title>
+    <script>
+        function toggleVisibility(id) {
+            var element = document.getElementById(id);
+            if (element.style.display === "none") {
+                element.style.display = "block";
+            } else {
+                element.style.display = "none";
+            }
+        }
+    </script>
 </head>
 <body>
 
 <div th:replace="~{fragments/base :: navigation}"></div>
 
 <div class="main-container">
+
+    <div id="noLogued" style="display: none">
+        <h1>Debes iniciar sesión para agregar un producto</h1>
+    </div>
 
     <div th:if="${product}" class="product-detail-container">
 
@@ -46,10 +60,21 @@
                     </span>
             </div>
 
-            <div class="purchase-actions" th:if="${product.stock > 0}">
-                <input type="number" min="1" value="1" class="quantity-input">
-                <button class="btn-add-cart">
+            <div class="purchase-actions" th:if="${product.stock > 0} and user_id != -1">
+                <input type="number" id="quantity" min="1" value="1" class="quantity-input">
+                <button class="btn-add-cart" th:data-userid="${user_id}" th:data-productid="${product.id}" onclick="addToCart(this.getAttribute('data-userid'), this.getAttribute('data-productid'))">
                     Agregar al Carrito      <i class="fas fa-shopping-cart"></i>
+                </button>
+            </div>
+            <div class="purchase-actions" th:if="${product.stock > 0} and user_id == -1">
+                <input type="number" min="1" value="1" class="quantity-input">
+                <button class="btn-add-cart" onclick="toggleVisibility('noLogued')">
+                    Agregar al Carrito      <i class="fas fa-shopping-cart"></i>
+                </button>
+            </div>
+            <div class="purchase-actions" th:if="${product.stock <= 0}">
+                <button class="btn-add-cart">
+                    No disponible      <i class="fas fa-shopping-cart"></i>
                 </button>
             </div>
         </div>
@@ -64,6 +89,35 @@
 </div>
 
 <div th:replace="~{fragments/base :: footer}"></div>
+
+<script>
+    function addToCart(userId, productId) {
+        const quantity = document.getElementById('quantity').value;
+        const data = {
+            productId: productId,
+            quantity: quantity
+        };
+
+        fetch('/users/addProduct/' + userId, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => {
+            if (response.ok) {
+                alert('Producto agregado al carrito');
+            } else {
+                alert('Error al agregar producto');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error al agregar producto');
+        });
+    }
+</script>
 
 </body>
 </html>

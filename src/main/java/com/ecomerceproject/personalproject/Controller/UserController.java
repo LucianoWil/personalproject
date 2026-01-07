@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RequestMapping("/users")
 @RestController
@@ -46,5 +47,12 @@ public class UserController {
             return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/addProduct/{id}")
+    public void addProduct(@RequestBody Map<String, Object> payload, @PathVariable long id){
+        Long productId = Long.valueOf(payload.get("productId").toString());
+        int quantity = Integer.parseInt(payload.get("quantity").toString());
+        userService.addProductToCart(id, productId, quantity);
     }
 }

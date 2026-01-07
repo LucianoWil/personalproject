@@ -11,14 +11,15 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Carrito {
+public class Cart {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToMany
+    @OneToMany(cascade = CascadeType.ALL)
     @Setter
-    private List<Product> products;
+    private List<CartItem> items;
+
     @Setter
     @OneToOne
     private User user;

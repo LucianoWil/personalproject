@@ -1,11 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:fragment="head-content">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mi E-Shop</title>
     <link rel="stylesheet" th:href="@{/css/product-card.css}">
     <link rel="stylesheet" th:href="@{/css/cart.css}">
+    <link rel="stylesheet" th:href="@{/css/login.css}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
@@ -25,6 +26,16 @@
                 <a th:href="@{/view/products/list}">Catálogo</a>
                 <a th:href="@{/view/categories/list}">Categorías</a>
                 <a th:href="@{/view/cart}">Carrito <i class="fas fa-shopping-cart"></i></a>
+
+                <!-- Botón de Login (visible solo si NO está autenticado) -->
+                <a sec:authorize="!isAuthenticated()" th:href="@{/view/login}">Login</a>
+
+                <!-- Botón de Logout (visible solo si SÍ está autenticado) -->
+                <form sec:authorize="isAuthenticated()" th:action="@{/logout}" method="post" style="display: inline;">
+                    <button type="submit" style="background: none; border: none; color: inherit; font: inherit; cursor: pointer; margin-left: 20px;">
+                        Logout <i class="fas fa-sign-out-alt"></i>
+                    </button>
+                </form>
             </div>
         </div>
     </nav>
