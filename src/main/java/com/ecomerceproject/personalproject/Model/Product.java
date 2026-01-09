@@ -19,6 +19,8 @@ public class Product {
     private double price;
     @Setter
     private String description;
+
+    private boolean isFeatured;
     
     @Setter
     @ManyToOne

@@ -49,10 +49,23 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/addProduct/{id}")
-    public void addProduct(@RequestBody Map<String, Object> payload, @PathVariable long id){
-        Long productId = Long.valueOf(payload.get("productId").toString());
-        int quantity = Integer.parseInt(payload.get("quantity").toString());
-        userService.addProductToCart(id, productId, quantity);
+    @PostMapping("/addProduct/{userId}")
+    public void addProduct(@RequestBody Map<String, Object> data, @PathVariable long userId){
+        Long productId = Long.valueOf(data.get("productId").toString());
+        int quantity = Integer.parseInt(data.get("quantity").toString());
+        userService.addProductToCart(userId, productId, quantity);
+    }
+
+    @PatchMapping("/changeProductQuantity/{userId}")
+    public void changeProductQuantity(@RequestBody Map<String, Object> data, @PathVariable long userId){
+        int quantity = Integer.parseInt(data.get("quantity").toString());
+        Long productId = Long.valueOf(data.get("productId").toString());
+        userService.changeProductQuantity(userId, quantity, productId);
+    }
+
+    @DeleteMapping("/deleteProduct/{userId}")
+    public void deleteProduct(@RequestBody Map<String, Object> data, @PathVariable long userId){
+        Long productId = Long.valueOf(data.get("productId").toString());
+        userService.deleteProduct(userId, productId);
     }
 }

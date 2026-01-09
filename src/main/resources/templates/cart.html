@@ -25,18 +25,36 @@
                              th:src="${productItem.getProduct().imageUrl}"
                              alt="Imagen del producto">
                         <img th:unless="${productItem.getProduct().imageUrl != null and !productItem.getProduct().imageUrl.isEmpty()}"
-                             th:src="@{/img/productItem.getProduct()-placeholder.jpg}"
+                             th:src="@{/img/product-placeholder.jpg}"
                              alt="Imagen placeholder">
                     </div>
                     <div class="cart-item-details">
-                        <h3 th:text="${productItem.getProduct().name} + ' x ' + ${productItem.getQuantity()}">Nombre del Producto</h3>
-                        <p class="item-price" th:text="'$' + ${productItem.getProduct().price}">$0.00</p>
+                        <h3 th:text="${productItem.getProduct().name}">Nombre del Producto</h3>
+                        <p class="mb-0" th:text="'Precio Unitario: $' + ${productItem.getProduct().getPrice()}"></p>
+                        <p class="item-price mt-0" th:id="'price-' + ${productItem.getProduct().getId()}" th:data-unitprice="${productItem.getProduct().price}" th:text="'$' + ${productItem.getProduct().price * productItem.getQuantity()}">$0.00</p>
                     </div>
                     <div class="cart-item-actions">
-                        <!-- Aquí podrías agregar lógica para eliminar del cart -->
-                        <form th:action="@{/cart/remove/{productId}(productId=${productItem.getProduct().id})}" method="post">
-                            <button type="submit" class="btn-remove"><i class="fas fa-trash"></i> Eliminar</button>
-                        </form>
+                        <div class="input-group" style="max-width: 150px;">
+                            <button  class="btn btn-outline-secondary"
+                                     type="button"
+                                     th:data-userid="${user_id}"
+                                     th:data-productid="${productItem.getProduct().getId()}"
+                                     onclick="updateQuantity(this.getAttribute('data-userid'), this.getAttribute('data-productid') , -1)">-</button>
+
+                            <input type="number" class="form-control text-center" th:value="${productItem.getQuantity()}" th:id="'quantity-input-' + ${productItem.getProduct().getId()}" readonly>
+
+                            <button class="btn btn-outline-secondary"
+                                    type="button"
+                                    th:data-userid="${user_id}"
+                                    th:data-productid="${productItem.getProduct().getId()}"
+                                    onclick="updateQuantity(this.getAttribute('data-userid'), this.getAttribute('data-productid') , 1)">+</button>
+                        </div>
+                        <button type="button" class="btn btn-danger ms-4 mt-3"
+                                th:data-userid="${user_id}"
+                                th:data-productid="${productItem.getProduct().getId()}"
+                                onclick="deleteItem(this.getAttribute('data-userid'), this.getAttribute('data-productid'))">
+                            <i class="fas fa-trash"></i> Eliminar
+                        </button>
                     </div>
                 </div>
             </div>
@@ -45,13 +63,9 @@
         <!-- Resumen del pedido -->
         <div class="cart-summary" th:if="${cart != null and !cart.isEmpty()}">
             <h2>Resumen del Pedido</h2>
-            <div class="summary-row" th:each="productItem : ${cart}">
-                <span th:text="${productItem.getProduct().name}"></span>
-                <span th:text="${productItem.getQuantity()}"></span>
-            </div>
             <div class="summary-row">
                 <span>Total Productos</span>
-                <span th:text="${cart.size()}">0</span>
+                <span id="cart-total" th:text="'$' + ${#aggregates.sum(cart.![product.price * quantity])}">$0.00</span>
             </div>
             <div class="summary-row total">
                 <span>Total:</span>
@@ -65,5 +79,94 @@
 
 <div th:replace="~{fragments/base :: footer}"></div>
 
+<script>
+    function updateQuantity(userId, productId, quantity){
+        const quantityItem = document.getElementById('quantity-input-' + productId);
+        //const currentText = quantityItem.innerText;
+        //const currentQuantity = parseInt(currentText, 10);
+        const currentQuantity = parseInt(quantityItem.value, 10);
+        console.log(currentQuantity);
+
+        const newQuantity = currentQuantity + quantity;
+
+        if (newQuantity < 0){
+            return;
+        }
+
+        const data = {
+            productId: productId,
+            quantity: newQuantity,
+        };
+
+        fetch('/users/changeProductQuantity/' + userId, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+            .then(response =>{
+                if (response.ok){
+                    //quantityItem.innerText = 'Cantidad: ' + newQuantity;
+                    quantityItem.value = newQuantity;
+
+                    const priceElement = document.getElementById('price-' + productId);
+                    const unitPrice = parseFloat(priceElement.getAttribute('data-unitprice'));
+                    priceElement.innerText = '$' + (unitPrice * newQuantity);
+
+                    updateCartTotal();
+
+                    if (newQuantity <= 0) {
+                        location.reload();
+                    }
+                }
+                else{
+                    alert('Error al cambiar la cantidad del producto');
+                }
+            })
+            .catch(error => {
+                console.error('Error', error);
+                alert(('Error al cambiar la cantidad del producto'));
+            })
+    }
+
+    function updateCartTotal() {
+        let total = 0;
+        document.querySelectorAll('.item-price').forEach(item => {
+            const price = parseFloat(item.innerText.replace('$', ''));
+            if (!isNaN(price)) {
+                total += price;
+            }
+        });
+        const totalElement = document.getElementById('cart-total');
+        if (totalElement) {
+            totalElement.innerText = '$' + total;
+        }
+    }
+
+    function deleteItem(userId, productId){
+        const data = {
+            productId: productId,
+        };
+
+        fetch('/users/deleteProduct/' + userId, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        }).then(response =>{
+            if(response.ok){
+                location.reload();
+            }
+            else{
+                alert('Error al eliminar el producto');
+            }
+    })
+        .catch(error => {
+        console.error('Error', error);
+        alert('Error al eliminar el producto');
+    })}
+</script>
 </body>
 </html>

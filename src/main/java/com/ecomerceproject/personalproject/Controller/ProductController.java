@@ -46,4 +46,15 @@ public class ProductController {
         }
         return ResponseEntity.ok().build();
     }
+
+    @PatchMapping("/{id}/featured")
+    public ResponseEntity<Void> setFeatured(@PathVariable Long id) {
+        try {
+            productService.setFeaturated(id);
+        }
+        catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok().build();
+    }
 }

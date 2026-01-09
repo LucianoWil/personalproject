@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ecomerceproject.personalproject.Model.Product;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -85,6 +86,20 @@ public class ProductService {
         }
         else{
             throw new RuntimeException("Product with id" + id + " not found");
+        }
+    }
+
+    public List<ProductDTO> getFeaturedProducts() {
+        Optional<List <Product>> optional = Optional.ofNullable(productRepository.findByIsFeaturedTrue());
+        return optional.map(products -> products.stream().map(ProductMapper::toDTO).collect(Collectors.toList())).orElseGet(ArrayList::new);
+    }
+
+    public void setFeaturated(Long id) {
+        Optional<Product> optional = productRepository.findById(id);
+        if (optional.isPresent()) {
+            Product product = optional.get();
+            product.setFeatured(!product.isFeatured());
+            productRepository.save(product);
         }
     }
 }

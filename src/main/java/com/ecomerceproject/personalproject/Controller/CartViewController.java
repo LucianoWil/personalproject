@@ -51,6 +51,7 @@ public class CartViewController {
             List<CartItem> cart = user.getCart();
             System.out.println("Carrito: " + cart);
             model.addAttribute("cart", cart);
+            model.addAttribute("user_id", user.getId());
         } else {
             System.out.println("NO hay usuario");
             // Manejar caso de usuario no encontrado o no logueado adecuadamente

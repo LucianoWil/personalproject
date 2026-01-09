@@ -73,11 +73,9 @@ public class ProductViewController {
         if (name != null && !name.isEmpty()) {
             // Si hay búsqueda, filtramos
             products = productService.getByName(name);
-            System.out.println("HAY4 parametro");
-            System.out.println(products);
-        } else {
+        }
+        else {
             products = productService.getAllProducts();
-            System.out.println("No hay parametro");
             System.out.println(products);
         }
 

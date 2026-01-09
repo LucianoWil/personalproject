@@ -15,6 +15,7 @@ public class ProductMapper {
                 .description(productDTO.description())
                 .stock(productDTO.stock())
                 .imageUrl(productDTO.imageUrl())
+                .isFeatured(productDTO.isFeatured())
                 .build();
     }
 
@@ -27,6 +28,7 @@ public class ProductMapper {
                 .categoryId(entity.getCategory().getId())
                 .stock(entity.getStock())
                 .imageUrl(entity.getImageUrl())
+                .isFeatured(entity.isFeatured())
                 .build();
     }
 }

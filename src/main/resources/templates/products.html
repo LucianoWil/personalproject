@@ -11,7 +11,10 @@
     <h1>Nuestros Productos</h1>
 
     <!-- Contenedor Grid para los productos -->
-    <div class="products-grid">
+    <div th:if="${products == null or products.isEmpty()}">
+        <h3>Producto no encontrado</h3>
+    </div>
+    <div class="products-grid" th:if="${products != null and !products.isEmpty()}">
         <div class="product-card" th:each="product :${products}">
             <a th:href="@{/view/products/{id}(id=${product.id})}">
                 <div class="product-image-section">

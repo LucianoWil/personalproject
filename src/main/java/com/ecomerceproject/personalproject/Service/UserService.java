@@ -83,8 +83,8 @@ public class UserService implements UserDetailsService {
 
     }
 
-    public void addProductToCart(Long id, Long productId, int quantity){
-        Optional<User> optional = userRepository.findById(id);
+    public void addProductToCart(Long userId, Long productId, int quantity){
+        Optional<User> optional = userRepository.findById(userId);
         if (optional.isPresent()){
             User user = optional.get();
 
@@ -100,7 +100,31 @@ public class UserService implements UserDetailsService {
 
         }
         else {
-            throw new RuntimeException("User with id " + id + "not found");
+            throw new RuntimeException("User with id " + userId + "not found");
+        }
+    }
+
+    public void changeProductQuantity(Long userId, int quantity, Long productId){
+        Optional<User> optional = userRepository.findById(userId);
+        if (optional.isPresent()){
+            User user = optional.get();
+            user.changeProductQuantity(productId, quantity);
+            userRepository.save(user);
+        }
+        else {
+            throw new RuntimeException("User with id " + userId + "not found");
+        }
+    }
+
+    public void deleteProduct(Long userId, Long productId){
+        Optional<User> optional = userRepository.findById(userId);
+        if (optional.isPresent()){
+            User user = optional.get();
+            user.deleteProduct(productId);
+            userRepository.save(user);
+        }
+        else {
+            throw new RuntimeException("User with id" + userId + "not found");
         }
     }
 }

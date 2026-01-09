@@ -61,16 +61,4 @@ public class AuthController {
         model.addAttribute("error", "Usuario o contraseña incorrectos");
         return "login";
     }
-    
-    @PostMapping("/logout")
-    public String logout(HttpServletResponse response) {
-        Cookie jwtCookie = new Cookie("JWT_TOKEN", null);
-        jwtCookie.setHttpOnly(true);
-        jwtCookie.setPath("/");
-        jwtCookie.setMaxAge(0); // Eliminar cookie
-        
-        response.addCookie(jwtCookie);
-        
-        return "redirect:/view/products/list";
-    }
 }

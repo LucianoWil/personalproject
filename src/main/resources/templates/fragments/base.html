@@ -3,45 +3,82 @@
 <head th:fragment="head-content">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mi E-Shop</title>
+    <title>WilberMart</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" th:href="@{/css/base.css}">
     <link rel="stylesheet" th:href="@{/css/product-card.css}">
     <link rel="stylesheet" th:href="@{/css/cart.css}">
     <link rel="stylesheet" th:href="@{/css/login.css}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <nav class="navbar" th:fragment= "navigation">
-        <div class="nav-container">
-            <a href="#" class="nav-logo">Mi E-Shop</a>
-            <form class="search-form" th:action="@{/view/products/list}" method="get">
-                <input type="text"
-                       name="name"
-                       th:value="${name}"
-                       placeholder="Buscar productos..."
-                       aria-label="Buscar">
-                <button type="submit"><i class="fas fa-search"></i></button>
-            </form>
-            <div class="nav-links">
-                <a href="#">Inicio</a>
-                <a th:href="@{/view/products/list}">Catálogo</a>
-                <a th:href="@{/view/categories/list}">Categorías</a>
-                <a th:href="@{/view/cart}">Carrito <i class="fas fa-shopping-cart"></i></a>
+    <!-- Navbar de Bootstrap -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm mb-4" th:fragment="navigation">
+        <div class="container">
+            <!-- Logo y Marca -->
+            <a class="navbar-brand d-flex align-items-center fw-bold" th:href="@{/view/index}">
+                <img src="/img/company-logo.png" alt="Logo" width="30" height="30" class="d-inline-block align-text-top me-2">
+                WilberMart
+            </a>
 
-                <!-- Botón de Login (visible solo si NO está autenticado) -->
-                <a sec:authorize="!isAuthenticated()" th:href="@{/view/login}">Login</a>
+            <!-- Botón Hamburguesa para móviles -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
-                <!-- Botón de Logout (visible solo si SÍ está autenticado) -->
-                <form sec:authorize="isAuthenticated()" th:action="@{/logout}" method="post" style="display: inline;">
-                    <button type="submit" style="background: none; border: none; color: inherit; font: inherit; cursor: pointer; margin-left: 20px;">
-                        Logout <i class="fas fa-sign-out-alt"></i>
-                    </button>
+            <!-- Contenido colapsable -->
+            <div class="collapse navbar-collapse" id="navbarContent">
+
+                <!-- Buscador (Centrado o a la izquierda según prefieras, aquí lo pongo con margen automático para empujar lo demás) -->
+                <form class="d-flex ms-auto me-3 my-2 my-lg-0 search-form" th:action="@{/view/products/list}" method="get">
+                    <input class="form-control me-2 border-0 bg-transparent" type="search" name="name" th:value="${name}" placeholder="Buscar productos..." aria-label="Search">
+                    <button class="btn btn-link text-secondary p-0" type="submit"><i class="fas fa-search"></i></button>
                 </form>
+
+                <!-- Enlaces de navegación -->
+                <ul class="navbar-nav mb-2 mb-lg-0 align-items-center">
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/view/index}">Inicio</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/view/products/list}">Catálogo</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/view/categories/list}">Categorías</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/view/cart}"><i class="fas fa-shopping-cart"></i></a>
+                    </li>
+
+                    <!-- Login -->
+                    <li class="nav-item" sec:authorize="!isAuthenticated()">
+                        <a class="nav-link" th:href="@{/view/login}">Login</a>
+                    </li>
+
+                    <!-- Logout -->
+                    <li class="nav-item" sec:authorize="isAuthenticated()">
+                        <form th:action="@{/logout}" method="post" class="d-inline">
+                            <button type="submit" class="nav-link btn btn-link border-0" style="text-decoration: none;">
+                                Logout <i class="fas fa-sign-out-alt"></i>
+                            </button>
+                        </form>
+                    </li>
+                </ul>
             </div>
         </div>
     </nav>
 
-    <footer th:fragment="footer" style="text-align: center; padding: 20px; color: #777;">
-        <p>&copy; 2025 Mi E-commerce en Spring Boot</p>
+    <footer th:fragment="footer" class="text-center py-4 text-muted mt-5 border-top">
+        <p>&copy; 2025 WilberMart</p>
+
+        <!-- Bootstrap JS Bundle -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     </footer>
 </body>
 </html>

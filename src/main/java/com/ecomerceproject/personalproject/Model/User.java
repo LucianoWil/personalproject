@@ -51,4 +51,29 @@ public class User {
             cart.add(newItem);
         }
     }
+
+    public void changeProductQuantity(Long productId, int quantity){
+        Optional<CartItem> existingItem = cart.stream()
+                .filter(item -> item.getProduct().getId().equals(productId))
+                .findFirst();
+
+        if (existingItem.isPresent()) {
+            CartItem item = existingItem.get();
+            item.setQuantity(quantity);
+        }
+        else{
+            throw new RuntimeException("Product with id " + productId + "not found");
+        }
+    }
+
+    public void deleteProduct(Long productId){
+        Optional<CartItem> existingItem = cart.stream().filter(item -> item.getProduct().getId().equals(productId)).findFirst();
+        if (existingItem.isPresent()){
+            CartItem item = existingItem.get();
+            cart.remove(item);
+        }
+        else{
+            throw new RuntimeException("Product with id " + productId + "not found");
+        }
+    }
 }
