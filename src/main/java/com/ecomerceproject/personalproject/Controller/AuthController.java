@@ -1,6 +1,5 @@
 package com.ecomerceproject.personalproject.Controller;
 
-import com.ecomerceproject.personalproject.DTOs.UserDTO;
 import com.ecomerceproject.personalproject.Model.User;
 import com.ecomerceproject.personalproject.Repository.UserRepository;
 import com.ecomerceproject.personalproject.Security.JwtService;
@@ -21,9 +20,6 @@ public class AuthController {
 
     @Autowired
     private UserRepository userRepository;
-
-    @Autowired
-    private UserController userController;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -57,7 +53,7 @@ public class AuthController {
                 
                 response.addCookie(jwtCookie);
                 
-                return "redirect:/view/products/list";
+                return "redirect:/view/index";
             }
         }
         
