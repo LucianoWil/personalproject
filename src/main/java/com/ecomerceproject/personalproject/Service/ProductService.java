@@ -39,6 +39,17 @@ public class ProductService {
         return productRepository.findAll().stream().map(ProductMapper::toDTO).collect(Collectors.toList());
     }
 
+    public void deleteAllProducts(Long id){
+        try {
+            if (id != null){
+                productRepository.deleteByCategoryId(id);
+            }
+        }
+        catch (Exception e) {
+            throw e;
+        }
+    }
+
     public List<ProductDTO> getByName(String name) {
         return productRepository.findByNameContainingIgnoreCase(name).stream().map(ProductMapper::toDTO).collect(Collectors.toList());
     }

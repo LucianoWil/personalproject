@@ -4,15 +4,14 @@ import com.ecomerceproject.personalproject.DTOs.CategoryDTO;
 import com.ecomerceproject.personalproject.DTOs.ProductDTO;
 import com.ecomerceproject.personalproject.Model.Category;
 import com.ecomerceproject.personalproject.Model.Product;
+import com.ecomerceproject.personalproject.Repository.CartItemRepository;
+import com.ecomerceproject.personalproject.Service.CartItemService;
 import com.ecomerceproject.personalproject.Service.CategoryService;
 import Mappers.CategoryMapper;
 import com.ecomerceproject.personalproject.Service.ProductService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -22,10 +21,12 @@ public class CategoryViewController {
 
     private final CategoryService categoryService;
     private final ProductService productService;
+    private final CartItemService cartItemService;
 
-    public CategoryViewController(CategoryService categoryService, ProductService productService) {
+    public CategoryViewController(CategoryService categoryService, ProductService productService, CartItemService cartItemService) {
         this.categoryService = categoryService;
         this.productService = productService;
+        this.cartItemService = cartItemService;
     }
 
     @GetMapping("/{id}")
@@ -56,5 +57,18 @@ public class CategoryViewController {
 
         model.addAttribute("categories", categories);
         return "categories";
+    }
+
+    @PostMapping("/delete/{id}")
+    public String deleteCategory(@PathVariable Long id) {
+        try {
+            cartItemService.deleteCartItemByCategory(id);
+            productService.deleteAllProducts(id);
+            categoryService.deleteCategory(id);
+        } catch (Exception e) {
+            System.err.println("Error al borrar la categoría: " + e.getMessage());
+        }
+
+        return "redirect:/view/categories/list";
     }
 }

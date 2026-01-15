@@ -22,6 +22,7 @@ public class User {
     @Column(nullable = false, length = 100)
     private String password;
     private String role = "user";
+    private boolean verified = false;
     @Column(nullable = false, unique = true)
     private String email;
 

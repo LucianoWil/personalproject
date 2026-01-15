@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/base :: head-content}">
+    <title>Verificación Enviada</title>
+</head>
+<body>
+
+<div th:replace="~{fragments/base :: navigation}"></div>
+
+<div class="main-container">
+    <div class="login-container" style="text-align: center;">
+        <h2>¡Registro Exitoso!</h2>
+        <p>Hemos enviado un correo electrónico de verificación a tu cuenta.</p>
+        <p>Por favor, revisa tu bandeja de entrada (y spam) y haz clic en el enlace para activar tu cuenta.</p>
+        <br>
+        <a th:href="@{/view/login}" class="btn-login" style="text-decoration: none; display: inline-block;">Iniciar sesión</a>
+    </div>
+</div>
+
+<div th:replace="~{fragments/base :: footer}"></div>
+
+</body>
+</html>

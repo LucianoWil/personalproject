@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:replace="~{fragments/base :: head-content}">
     <title>Categorías</title>
 </head>
@@ -32,6 +32,14 @@
                     <h2 th:text="${category.name}"> </h2>
                 </div>
             </a>
+            <div class="d-flex justify-content-center mx-auto mb-3">
+                <form th:action="@{/view/categories/delete/{id}(id=${category.id})}" th:method="post" style="display:inline;">
+                    <button type="submit" class="btn btn-danger" sec:authorize="hasRole('ADMIN')"
+                            onclick="return confirm('¿Estás seguro de que quieres eliminar esta categoría y todos sus productos?');">
+                        Eliminar
+                    </button>
+                </form>
+            </div>
         </div>
     </div>
 </div>

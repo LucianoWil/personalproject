@@ -25,9 +25,9 @@ import java.util.List;
 public class SecurityConfig {
 
     public static final String[] PUBLIC_ENDPOINTS = {
-            "/users/**", "/sessions", "/register", "/verify", "/users/verify", "/login", "/users/login",
-            "/", "/password/**","/verified", "/verify-token", "/categories", "/categories/**","/users/**",
-            "/products", "/products/**", "/view/**"
+            "/users/**", "/sessions", "/register", "/verify", "/users/verify-message", "/login", "/users/login",
+            "/", "/password/**","/verified", "/verify-message-token", "/categories", "/categories/**","/users/**",
+            "/products", "/products/**", "/view/**", "/verification-sent"
     };
 
     private final JwtAuthFilter authFilter;

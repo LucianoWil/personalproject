@@ -4,6 +4,7 @@ import com.ecomerceproject.personalproject.Model.Category;
 import com.ecomerceproject.personalproject.Model.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 import java.util.List;
@@ -14,4 +15,7 @@ public interface ProductRepository extends JpaRepository<Product, Long>{
     List<Product> findByNameContainingIgnoreCase(String name);
     List<Product> findByCategoryName(String name);
     List<Product> findByIsFeaturedTrue();
+
+    @Transactional
+    void deleteByCategoryId(Long id);
 }

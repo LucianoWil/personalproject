@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:replace="~{fragments/base :: head-content}">
     <title th:text="${product != null} ? ${product.name} : 'Producto no encontrado'">Detalle de Producto</title>
     <script>
@@ -26,13 +26,11 @@
     <div th:if="${product}" class="product-detail-container">
 
         <div class="product-image-section">
-            <!-- Si hay URL de imagen, mostramos la imagen -->
             <img th:if="${product.imageUrl != null and !product.imageUrl.isEmpty()}"
                  th:src="${product.imageUrl}"
                  alt="Imagen del producto"
                  class="product-img">
 
-            <!-- Si NO hay URL, mostramos el placeholder -->
             <div th:unless="${product.imageUrl != null and !product.imageUrl.isEmpty()}" class="image-placeholder">
                 <i class="fas fa-camera fa-3x"></i>
                 <p>Imagen del producto</p>
@@ -40,7 +38,7 @@
         </div>
 
         <div class="product-info-section">
-            <span class="category-tag">Categoría General</span>
+            <span class="category-tag" th:text="${category}">Categoría General</span>
             <h1 th:text="${product.name}">Nombre del Producto</h1>
 
             <div class="price-container">
@@ -76,6 +74,14 @@
                 <button class="btn-add-cart">
                     No disponible      <i class="fas fa-shopping-cart"></i>
                 </button>
+            </div>
+            <div class="d-flex justify-content-center mt-2">
+                <form th:action="@{/view/products/delete/{id}(id=${product.id})}" th:method="post" style="display:inline;">
+                    <button type="submit" class="btn btn-danger" sec:authorize="hasRole('ADMIN')"
+                            onclick="return confirm('¿Estás seguro de que quieres eliminar este producto?');">
+                        Eliminar
+                    </button>
+                </form>
             </div>
         </div>
     </div>

@@ -16,7 +16,6 @@
     transition: transform 0.2s, box-shadow 0.2s;
     display: flex;
     flex-direction: column;
-    height: 400px; /* ALTURA FIJA PARA TODAS LAS TARJETAS */
 }
 
 .product-card a{
@@ -41,7 +40,7 @@
 .product-card .product-img {
     width: 100%;
     height: 100%;
-    object-fit: contain;
+    object-fit: cover;
     object-position: center;
 }
 

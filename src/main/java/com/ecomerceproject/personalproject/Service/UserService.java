@@ -4,6 +4,7 @@ import Mappers.UserMapper;
 import com.ecomerceproject.personalproject.DTOs.UserDTO;
 import com.ecomerceproject.personalproject.Model.Product;
 import com.ecomerceproject.personalproject.Model.User;
+import com.ecomerceproject.personalproject.Model.VerificationToken;
 import com.ecomerceproject.personalproject.Repository.ProductRepository;
 import com.ecomerceproject.personalproject.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,8 +14,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,11 +28,16 @@ public class UserService implements UserDetailsService {
     private final ProductRepository productRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private final EmailService emailService;
+    @Autowired
+    private VerificationTokenService verificationTokenService;
 
 
-    public UserService(UserRepository userRepository, ProductRepository productRepository) {
+    public UserService(UserRepository userRepository, ProductRepository productRepository, EmailService emailService) {
         this.userRepository = userRepository;
         this.productRepository = productRepository;
+        this.emailService = emailService;
     }
 
     public List<UserDTO> getAllUsers() {
@@ -42,9 +50,19 @@ public class UserService implements UserDetailsService {
     }
 
     public UserDTO createUser(UserDTO dto) {
+        if (userRepository.findByEmail(dto.email()).isPresent()){
+            throw new IllegalArgumentException("Email ya registrado");
+        }
+
         User user = UserMapper.toEntity(dto);
         user.setPassword(passwordEncoder.encode(dto.password()));
-        return UserMapper.toDTO(userRepository.save(user));
+        user.setVerified(false);
+        user.setRole("USER");
+        User savedUser = userRepository.save(user);
+
+        sendVerificationEmail(savedUser);
+
+        return UserMapper.toDTO(savedUser);
     }
 
     public UserDTO update(Long id, UserDTO updatedDto) {
@@ -79,8 +97,12 @@ public class UserService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         var user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found" + username));
-        return (UserDetails) User.builder().id(user.getId()).username(user.getUsername()).email(user.getEmail()).password(user.getPassword()).role(user.getRole()).build();
-
+        return (UserDetails) org.springframework.security.core.userdetails.User.builder()
+                .username(user.getUsername())
+                .password(user.getPassword())
+                .roles(user.getRole())
+                .disabled(!user.isVerified()) // Deshabilita si no está verificado
+                .build();
     }
 
     public void addProductToCart(Long userId, Long productId, int quantity){
@@ -127,4 +149,14 @@ public class UserService implements UserDetailsService {
             throw new RuntimeException("User with id" + userId + "not found");
         }
     }
+
+    public void sendVerificationEmail(User user) {
+        String token = UUID.randomUUID().toString();
+        LocalDateTime expiry = LocalDateTime.now().plusHours(24);
+
+        verificationTokenService.createVerificationToken(user, token, expiry);
+
+        emailService.sendVerificationEmail(user.getEmail(), token);
+    }
+
 }
