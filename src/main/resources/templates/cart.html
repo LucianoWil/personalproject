@@ -11,10 +11,9 @@
     <h1>Tu carrito de compras</h1>
 
     <div class="cart-container mx-auto">
-        <!-- Lista de productos en el cart -->
         <div class="cart-items">
             <div th:if="${cart == null or cart.isEmpty()}" class="empty-cart">
-                <p>Tu cart está vacío.</p>
+                <p>Tu carrito está vacío.</p>
                 <a th:href="@{/view/products/list}" class="btn-continue-shopping">Continuar comprando</a>
             </div>
 

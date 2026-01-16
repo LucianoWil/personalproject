@@ -58,7 +58,7 @@ public class SecurityConfig {
                         .requestMatchers("/users/me").authenticated()
                         .requestMatchers("/products/**").hasRole("ADMIN")
                         .anyRequest().authenticated())
-                .logout(logout -> logout.logoutUrl("/logout").deleteCookies("JWT_TOKEN").logoutSuccessUrl("/view/products/list").permitAll())
+                .logout(logout -> logout.logoutUrl("/logout").deleteCookies("JWT_TOKEN").logoutSuccessUrl("/view/index").permitAll())
                 .sessionManagement(sessionManager -> sessionManager
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class)
