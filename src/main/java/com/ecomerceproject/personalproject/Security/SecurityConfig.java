@@ -48,7 +48,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .headers(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/css/**", "/js/**", "/img/**", "/fonts/**", "/webfonts/**", "/favicon.ico").permitAll()
+                        .requestMatchers("/css/**", "/js/**", "/img/**", "/fonts/**", "/webfonts/**", "/favicon.ico", "/webjars/**").permitAll()
                         .requestMatchers("/error").permitAll()
                         .requestMatchers("/swagger-ui/**").permitAll()
                         .requestMatchers("/swagger-ui.html").permitAll()

@@ -35,7 +35,7 @@
             <div class="d-flex justify-content-center mx-auto mb-3">
                 <form th:action="@{/view/categories/delete/{id}(id=${category.id})}" th:method="post" style="display:inline;">
                     <button type="submit" class="btn btn-danger" sec:authorize="hasRole('ADMIN')"
-                            onclick="return confirm('¿Estás seguro de que quieres eliminar esta categoría y todos sus productos?');">
+                            onclick="return confirmarEliminacion(event);">
                         Eliminar
                     </button>
                 </form>
@@ -46,5 +46,28 @@
 
 <div th:replace="~{fragments/base :: footer}"></div>
 
+<script th:src="@{/webjars/sweetalert2/dist/sweetalert2.min.js}"></script>
+<script>
+    function confirmarEliminacion(event) {
+        event.preventDefault();
+
+        const form = event.target.closest('form');
+
+        Swal.fire({
+            title: '¿Desea eliminar el producto?',
+            text: "No podrás revertir esta acción y los elementos se borraran de los carritos de los usuarios",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Eliminar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                form.submit();
+            }
+        });
+    }
+</script>
 </body>
 </html>

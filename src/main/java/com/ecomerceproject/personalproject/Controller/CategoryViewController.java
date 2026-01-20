@@ -12,6 +12,7 @@ import com.ecomerceproject.personalproject.Service.ProductService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -60,7 +61,7 @@ public class CategoryViewController {
     }
 
     @PostMapping("/delete/{id}")
-    public String deleteCategory(@PathVariable Long id) {
+    public String deleteCategory(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
             cartItemService.deleteCartItemByCategory(id);
             productService.deleteAllProducts(id);
@@ -69,6 +70,8 @@ public class CategoryViewController {
             System.err.println("Error al borrar la categoría: " + e.getMessage());
         }
 
+        redirectAttributes.addFlashAttribute("mensaje", "Categoría eliminada correctamente");
+        redirectAttributes.addFlashAttribute("tipo", "success");
         return "redirect:/view/categories/list";
     }
 }
