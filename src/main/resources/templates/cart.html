@@ -38,15 +38,23 @@
                                      type="button"
                                      th:data-userid="${user_id}"
                                      th:data-productid="${productItem.getProduct().getId()}"
-                                     onclick="updateQuantity(this.getAttribute('data-userid'), this.getAttribute('data-productid') , -1)">-</button>
+                                     onclick="updateQuantity(this.getAttribute('data-userid'), this.getAttribute('data-productid') , -1, false)">-</button>
 
-                            <input type="number" class="form-control text-center" th:value="${productItem.getQuantity()}" th:id="'quantity-input-' + ${productItem.getProduct().getId()}" readonly>
+                            <input type="number" class="form-control text-center"
+                                   th:value="${productItem.getQuantity()}"
+                                   th:id="|quantity-input-${productItem.getProduct().getId()}|"
+                                   th:data-userid="${user_id}"
+                                   th:data-productid="${productItem.getProduct().getId()}"
+                                   th:data-stock="${productItem.getProduct().getStock()}"
+                                   min="1"
+                                   th:max="${productItem.getProduct().getStock()}"
+                                   onchange="updateQuantity(this.getAttribute('data-userid'), this.getAttribute('data-productid') , this.value, true)">
 
                             <button class="btn btn-outline-secondary"
                                     type="button"
                                     th:data-userid="${user_id}"
                                     th:data-productid="${productItem.getProduct().getId()}"
-                                    onclick="updateQuantity(this.getAttribute('data-userid'), this.getAttribute('data-productid') , 1)">+</button>
+                                    onclick="updateQuantity(this.getAttribute('data-userid'), this.getAttribute('data-productid') , 1, false)">+</button>
                         </div>
                         <button type="button" class="btn btn-danger ms-4 mt-3"
                                 th:data-userid="${user_id}"
@@ -71,25 +79,52 @@
                 <!-- Calculamos el total sumando los precios de los productos -->
                <!-- <span th:text="'$' + ${#aggregates.sum(cart.![price])}">$0.00</span> -->
             </div>
-            <button class="btn-checkout">Proceder al Pago</button>
+            <form th:action="@{/view/cart/emptyCart/{isPurchase}(isPurchase=true)}" th:method="get" style="display:inline;">
+                <button class="btn-checkout" onclick="purchase(event, true)">Proceder al Pago</button>
+            </form>
         </div>
+        <form th:action="@{/view/cart/emptyCart/{isPurchase}(isPurchase=false)}" th:method="get" style="display:inline;">
+            <button type="button" class="btn btn-danger ms-4 mt-3" onclick="purchase(event, false)"><i class="fas fa-trash"></i> Vaciar carrito</button>
+        </form>
     </div>
 </div>
 
 <div th:replace="~{fragments/base :: footer}"></div>
 
 <script>
-    function updateQuantity(userId, productId, quantity){
+    function updateQuantity(userId, productId, quantity, isManualChange){
+        var changeValue = parseInt(quantity, 10);
+
+        if (isNaN(changeValue) || (changeValue < 1 && isManualChange)) {
+            changeValue = 1;
+        }
+
         const quantityItem = document.getElementById('quantity-input-' + productId);
+        const maxStock = parseInt(quantityItem.getAttribute('data-stock'), 10);
         //const currentText = quantityItem.innerText;
         //const currentQuantity = parseInt(currentText, 10);
         const currentQuantity = parseInt(quantityItem.value, 10);
-        console.log(currentQuantity);
 
-        const newQuantity = currentQuantity + quantity;
+        var newQuantity = 0;
+        if(isManualChange){
+            newQuantity = changeValue;
+        }
+        else{
+            newQuantity = currentQuantity + changeValue;
+        }
 
         if (newQuantity < 0){
             return;
+        }
+
+        if (newQuantity > maxStock) {
+            Swal.fire({
+                title: 'Límite de producto',
+                text: 'Lo sentimos, solo tenemos ' + maxStock + ' unidades en stock',
+                icon: 'error',
+                confirmButtonText: 'Aceptar'
+            })
+            newQuantity = maxStock;
         }
 
         const data = {
@@ -166,6 +201,27 @@
         console.error('Error', error);
         alert('Error al eliminar el producto');
     })}
+
+    function purchase(event, isPurchase) {
+        event.preventDefault();
+
+        const form = event.target.closest('form');
+
+        if (isPurchase){
+        Swal.fire({
+            title: 'Producto comprado con exito',
+            text: 'Armaremos su pedido y lo enviaremos a su dirección',
+            icon: 'success',
+            confirmButtonText: 'Aceptar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                form.submit();
+            }
+        });}
+        else{
+            form.submit();
+        }
+    }
 </script>
 </body>
 </html>

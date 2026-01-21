@@ -59,7 +59,7 @@
             </div>
 
             <div class="purchase-actions" th:if="${product.stock > 0} and user_id != -1">
-                <input type="number" id="quantity" min="1" value="1" class="quantity-input">
+                <input type="number" id="quantity" min="1" value="1" class="quantity-input" th:max="${product.stock}">
                 <button class="btn-add-cart" th:data-userid="${user_id}" th:data-productid="${product.id}" onclick="addToCart(this.getAttribute('data-userid'), this.getAttribute('data-productid'))">
                     Agregar al Carrito      <i class="fas fa-shopping-cart"></i>
                 </button>

@@ -159,4 +159,15 @@ public class UserService implements UserDetailsService {
         emailService.sendVerificationEmail(user.getEmail(), token);
     }
 
+    public void emptyCart(Long userId){
+        Optional<User> optional = userRepository.findById(userId);
+        if (optional.isPresent()){
+            User user = optional.get();
+            user.emptyCart();
+            userRepository.save(user);
+        }
+        else {
+            throw new RuntimeException("User with id" + userId + "not found");
+        }
+    }
 }

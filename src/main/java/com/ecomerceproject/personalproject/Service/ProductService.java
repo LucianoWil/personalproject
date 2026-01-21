@@ -113,4 +113,13 @@ public class ProductService {
             productRepository.save(product);
         }
     }
+
+    public void setProductStock(Long id, int quantity){
+        Optional<Product> optional = productRepository.findById(id);
+        if (optional.isPresent()) {
+            Product product = optional.get();
+            product.setStock(quantity);
+            productRepository.save(product);
+        }
+    }
 }

@@ -77,4 +77,8 @@ public class User {
             throw new RuntimeException("Product with id " + productId + "not found");
         }
     }
+
+    public void emptyCart(){
+        this.cart.clear();
+    }
 }

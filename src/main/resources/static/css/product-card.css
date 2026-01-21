@@ -189,3 +189,10 @@
         height: 300px;
     }
 }
+
+.current-price{
+    font-weight: bold;
+    color: var(--primary-color);
+    margin: 0;
+    font-size: x-large;
+}
