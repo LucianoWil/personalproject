@@ -27,6 +27,7 @@ public class EmailService {
 
         SimpleMailMessage email = new SimpleMailMessage();
         email.setTo(to);
+        email.setFrom("wilbermartcommerce@gmail.com");
         email.setSubject(subject);
         email.setText(message);
 
